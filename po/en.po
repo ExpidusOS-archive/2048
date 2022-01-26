@@ -1,0 +1,28 @@
+#: data/res/game-win.glade:22
+msgid "2048"
+msgstr "2048"
+
+#: data/res/settings-win.glade:26
+msgid "General"
+msgstr "General"
+
+#: data/res/settings-win.glade:31
+msgid "Gameplay"
+msgstr "Gameplay"
+
+#: data/res/settings-win.glade:41
+msgid "Board Width"
+msgstr "Board Width"
+
+#: data/res/settings-win.glade:67
+msgid "Board Height"
+msgstr "Board Height"
+
+#: data/res/settings-win.glade:88
+msgid "Information"
+msgstr "Information"
+
+#: data/res/settings-win.glade:98 src/window.vala:30
+#, c-format
+msgid "Version: %s"
+msgstr "Version: %s"

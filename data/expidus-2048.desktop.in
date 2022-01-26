@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=2048
+GenericName=2048
+Icon=gnome-2048
+TryExec=@BINDIR@/expidus-2048
+Exec=@BINDIR@/expidus-2048
+Categories=Games;

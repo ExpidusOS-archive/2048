@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the expidus-2048 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: expidus-2048\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-26 00:34-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/res/game-win.glade:22
+msgid "2048"
+msgstr ""
+
+#: data/res/settings-win.glade:26
+msgid "General"
+msgstr ""
+
+#: data/res/settings-win.glade:31
+msgid "Gameplay"
+msgstr ""
+
+#: data/res/settings-win.glade:41
+msgid "Board Width"
+msgstr ""
+
+#: data/res/settings-win.glade:67
+msgid "Board Height"
+msgstr ""
+
+#: data/res/settings-win.glade:88
+msgid "Information"
+msgstr ""
+
+#: data/res/settings-win.glade:98 src/window.vala:30
+#, c-format
+msgid "Version: %s"
+msgstr ""

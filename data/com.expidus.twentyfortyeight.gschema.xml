@@ -1,0 +1,11 @@
+<schemalist>
+  <schema path="/com/expidus/twentyfortyeight/" id="com.expidus.twentyfortyeight">
+    <key name="board-size" type="(ii)">
+      <default>(5, 5)</default>
+      <summary>Board Size</summary>
+      <description>
+        Changes the size of the board.
+      </description>
+    </key>
+  </schema>
+</schemalist>

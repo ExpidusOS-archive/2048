@@ -1,0 +1,5 @@
+data/res/game-win.glade
+data/res/settings-win.glade
+src/application.vala
+src/main.vala
+src/window.vala
