@@ -19,6 +19,64 @@ namespace Expidus2048 {
     }
   }
   
+  private class ColorSchemeSolarizedLight : GLib.Object, ColorScheme {
+    public string get_name() {
+      return _("Solarized Light");
+    }
+
+    public Color? get_color(uint64 value) {
+      if (value == 2) return Color.from_hex("657b83");
+      else if (value == 4) return Color.from_hex("839496");
+      else if (value == 8) return Color.from_hex("93a1a1");
+      else if (value == 16) return Color.from_hex("b58900");
+      else if (value == 32) return Color.from_hex("cb4b16");
+      else if (value == 64) return Color.from_hex("dc322f");
+      else if (value == 128) return Color.from_hex("d33682");
+      else if (value == 256) return Color.from_hex("6c71c4");
+      else if (value == 512) return Color.from_hex("268bd2");
+      else if (value == 1024) return Color.from_hex("2aa198");
+      else if (value == 2048) return Color.from_hex("859900");
+      return Color.from_hex("#586e75");
+    }
+
+    public Color? get_foreground_color(uint64 value) {
+      return Color.from_hex("#002b36");
+    }
+    
+    public Color get_background_color(bool board) {
+      return Color.from_hex(board ? "#fdf6e3" : "#eee8d5");
+    }
+  }
+  
+  private class ColorSchemeSolarizedDark : GLib.Object, ColorScheme {
+    public string get_name() {
+      return _("Solarized Dark");
+    }
+
+    public Color? get_color(uint64 value) {
+      if (value == 2) return Color.from_hex("657b83");
+      else if (value == 4) return Color.from_hex("839496");
+      else if (value == 8) return Color.from_hex("93a1a1");
+      else if (value == 16) return Color.from_hex("b58900");
+      else if (value == 32) return Color.from_hex("cb4b16");
+      else if (value == 64) return Color.from_hex("dc322f");
+      else if (value == 128) return Color.from_hex("d33682");
+      else if (value == 256) return Color.from_hex("6c71c4");
+      else if (value == 512) return Color.from_hex("268bd2");
+      else if (value == 1024) return Color.from_hex("2aa198");
+      else if (value == 2048) return Color.from_hex("859900");
+      return Color.from_hex("#586e75");
+    }
+
+    public Color? get_foreground_color(uint64 value) {
+      return Color.from_hex("#fdf6e3");
+    }
+    
+    public Color get_background_color(bool board) {
+      return Color.from_hex(board ? "#073642" : "#002b36");
+    }
+  }
+  
   private class ColorSchemeClassic : GLib.Object, ColorScheme { 
     public string get_name() {
       return _("Classic");
@@ -102,6 +160,8 @@ namespace Expidus2048 {
     public static GLib.List<ColorScheme?> get_all() {
       var lst = new GLib.List<ColorScheme?>();
       lst.append(new ColorSchemeClassic());
+      lst.append(new ColorSchemeSolarizedLight());
+      lst.append(new ColorSchemeSolarizedDark());
       return lst;
     }
     

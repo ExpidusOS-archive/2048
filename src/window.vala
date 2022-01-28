@@ -79,6 +79,7 @@ namespace Expidus2048 {
     [GtkCallback]
     private bool do_draw(Gtk.Widget w, Cairo.Context cr) {
       var color_scheme = this._settings.get_boolean("system-colors") ? new ColorSchemeSystem() : ColorScheme.by_name(this._settings.get_string("color-scheme"));
+      GLib.debug("Using %s for color scheme", color_scheme.get_name());
 
       var bg = color_scheme.get_background_color(false);
       cr.set_source_rgba(bg.red, bg.green, bg.blue, bg.alpha);
