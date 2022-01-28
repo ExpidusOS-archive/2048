@@ -17,6 +17,7 @@ namespace Expidus2048 {
     public uint64 score { get; }
     public GameState state { get; }
     
+    private uint64*[] _fspace;
     private uint64[] _breg;
     private uint64[] _freg;
     
@@ -26,6 +27,7 @@ namespace Expidus2048 {
     
     construct { 
       this.board = new uint64[this.board_width * this.board_height];
+      this._fspace = new uint64*[this.board_width * this.board_height];
       this.reset_regs();
       this.rand_piece();
       this._state = GameState.PLAYING;
@@ -103,7 +105,13 @@ namespace Expidus2048 {
 
       if (need_add_tile) this.rand_piece();
     }
-
+    
+    private void reset_space() {
+      for (var i = 0; i < this.board_width * this.board_height; i++) {
+        this._fspace[i] = null;
+      }
+    }
+    
     public void set_piece(int32 x, int32 y, uint64 numb) {
       this.board[x * this.board_width + y] = numb;
       this.draw();
@@ -170,11 +178,12 @@ namespace Expidus2048 {
           this.rotate(90);
           break;
         case Direction.DOWN:
-          this.rotate(270);
-          this.left();
           this.rotate(90);
+          this.left();
+          this.rotate(270);
           break;
       }
+      this.draw();
     }
     
     public signal void draw();
