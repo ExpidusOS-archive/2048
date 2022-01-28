@@ -3,20 +3,10 @@ namespace Expidus2048 {
   private const int TILE_SIZE = 64;
   private const int TILE_RADIUS = 6;
 
-  public enum Direction {
-    NONE = 0,
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
-  }
-
   [GtkTemplate(ui = "/com/expidus/twentyfortyeight/game-win.glade")]
 	public class Window : Hdy.ApplicationWindow {
     private GLib.Settings _settings;
-    private uint64[] _board;
-    private int32 _board_width;
-    private int32 _board_height;
+    private Game _game;
     
     [GtkChild]
     private unowned Gtk.Stack stack;
@@ -35,45 +25,27 @@ namespace Expidus2048 {
     }
     
     private void set_size() {
-      this.game_area.set_size_request((TILE_SIZE + TILE_SPACING) * this._board_width, (TILE_SIZE + TILE_SPACING) * this._board_height);
+      this.game_area.set_size_request((TILE_SIZE + TILE_SPACING) * this._game.board_width, (TILE_SIZE + TILE_SPACING) * this._game.board_height);
     }
     
     private void reset_game() {
       var val = this._settings.get_value("board-size");
-
-      this._board_width = val.get_child_value(0).get_int32();
-      this._board_height = val.get_child_value(1).get_int32();
-
-      this._board = new uint64[this._board_width * this._board_height];
-      for (var i = 0; i < this._board_width * this._board_height; i++) this._board[i] = 0;
-      this.rand_piece();
+      
+      this._game = new Game(val.get_child_value(0).get_int32(), val.get_child_value(1).get_int32());
+      this._game.notify["state"].connect(() => {
+        if (this._game.state == GameState.LOST || this._game.state == GameState.WIN) {
+          var dialog = new Gtk.Dialog.with_buttons(_("2048"), this, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, _("Ok"), Gtk.ResponseType.NONE);
+          var area = dialog.get_content_area();
+          area.add(new Gtk.Label(this._game.state == GameState.WIN ? _("You win!") : _("You lost!")));
+          dialog.show_all();
+          this.reset_game();
+        }
+      });
+      
+      this._game.notify["score"].connect(() => this.game_area.queue_draw());
+      this._game.draw.connect(() => this.game_area.queue_draw());
     }
     
-    private void set_piece(int32 x, int32 y, uint64 numb) {
-      this._board[x * this._board_width + y] = numb;
-      this.game_area.queue_draw();
-    }
-    
-    private uint64 get_piece(int32 x, int32 y) {
-      return this._board[x * this._board_width + y];
-    }
-    
-    private void rand_piece() {
-      while (true) {
-        var x = GLib.Random.int_range(0, this._board_width);
-        var y = GLib.Random.int_range(0, this._board_height);
-
-        var n = this.get_piece(x, y);
-        if (n != 0) continue;
-
-        this.set_piece(x, y, 2);
-        break;
-      }
-    }
-    
-    private void move_pieces(Direction dir) {
-    }
-
     private void draw_rounded_rectangle(Cairo.Context cr, double x, double y, double w, double h, double r) {
       const double d = Math.PI / 180.0;
       cr.new_sub_path();
@@ -83,6 +55,25 @@ namespace Expidus2048 {
       cr.arc(x + r, y + r, r, 180 * d, 270 * d);
       cr.close_path();
       cr.fill();
+    }
+
+    [GtkCallback]
+    private bool do_key_pressed(Gdk.EventKey ev) {
+      switch (ev.keyval) {
+        case Gdk.Key.Left:
+          this._game.move(Direction.LEFT);
+          break;
+        case Gdk.Key.Right:
+          this._game.move(Direction.RIGHT);
+          break;
+        case Gdk.Key.Up:
+          this._game.move(Direction.UP);
+          break;
+        case Gdk.Key.Down:
+          this._game.move(Direction.DOWN);
+          break;
+      }
+      return true;
     }
     
     [GtkCallback]
@@ -97,32 +88,47 @@ namespace Expidus2048 {
       int baseline = 0;
       w.get_allocated_size(out alloc, out baseline);
       
-      var total_width = (this._board_width * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
-      var total_height = (this._board_height * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
+      var text_color = color_scheme.get_foreground_color(0);
+      
+      var layout = Pango.cairo_create_layout(cr);
+      layout.set_font_description(Pango.FontDescription.from_string("Sans Bold 15"));
+      var score_txt = _("Score: %llu").printf(this._game.score);
+      layout.set_text(score_txt, score_txt.length);
+
+      cr.set_source_rgba(text_color.red, text_color.green, text_color.blue, text_color.alpha);
+      Pango.cairo_update_layout(cr, layout);
+
+      int text_width = 0;
+      int text_height = 0;
+      layout.get_pixel_size(out text_width, out text_height);
+      
+      var total_width = (this._game.board_width * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
+      var total_height = ((this._game.board_height * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING) + text_height;
       
       var center_x = (alloc.width / 2) - (total_width / 2);
       var center_y = (alloc.height / 2) - (total_height / 2);
+      cr.move_to(center_x, center_y);
+      Pango.cairo_show_layout(cr, layout);
+      
+      center_y += TILE_SPACING + text_height;
+      total_height -= text_height;
 
       var board_bg = color_scheme.get_background_color(true);
       cr.set_source_rgba(board_bg.red, board_bg.green, board_bg.blue, board_bg.alpha);
       this.draw_rounded_rectangle(cr, center_x, center_y, total_width, total_height, 6);
       
-      var text_color = color_scheme.get_foreground_color(0);
-      
-      for (var y = 0; y < this._board_height; y++) {
-        for (var x = 0; x < this._board_width; x++) {
+      for (var y = 0; y < this._game.board_height; y++) {
+        for (var x = 0; x < this._game.board_width; x++) {
           var draw_x = (x * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
           var draw_y = (y * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
           
-          var value = this.get_piece(x, y);
+          var value = this._game.get_piece(x, y);
           var tile_bg = color_scheme.get_color(value);
           cr.set_source_rgba(tile_bg.red, tile_bg.green, tile_bg.blue, tile_bg.alpha);
           
           this.draw_rounded_rectangle(cr, draw_x + center_x, draw_y + center_y, TILE_SIZE, TILE_SIZE, 6);
           
           if (value > 0) {
-            var layout = Pango.cairo_create_layout(cr);
-            layout.set_font_description(Pango.FontDescription.from_string("Sans Bold 35"));
             var txt = value.to_string();
             layout.set_text(txt, txt.length);
 
@@ -130,8 +136,8 @@ namespace Expidus2048 {
             cr.set_source_rgba(text_color.red, text_color.green, text_color.blue, text_color.alpha);
             Pango.cairo_update_layout(cr, layout);
             
-            int text_width = 0;
-            int text_height = 0;
+            text_width = 0;
+            text_height = 0;
             layout.get_pixel_size(out text_width, out text_height);
             cr.move_to(draw_x + center_x + ((TILE_SIZE / 2) - (text_width / 2)), draw_y + center_y + ((TILE_SIZE / 2) - (text_height / 2)));
             Pango.cairo_show_layout(cr, layout);

@@ -8,7 +8,7 @@
       </description>
     </key>
     <key name="system-colors" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Use system colors</summary>
       <description>
         Use the system theme colors for tiles.

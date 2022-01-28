@@ -10,6 +10,7 @@
     <property name="default-height">480</property>
     <property name="icon-name">gnome-2048</property>
     <property name="gravity">center</property>
+    <signal name="key-press-event" handler="do_key_pressed" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>

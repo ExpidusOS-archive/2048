@@ -41,7 +41,7 @@ game_res = gnome.compile_resources('expidus-2048-res', 'data/res/res.gresource.x
   source_dir: 'data/res',
   c_name: 'Expidus2048')
 
-executable('expidus-2048', 'src/application.vala', 'src/colorscheme.vala', 'src/main.vala', 'src/window.vala', game_res, build_conf, build_conf_h,
+executable('expidus-2048', 'src/application.vala', 'src/colorscheme.vala', 'src/game.vala', 'src/main.vala', 'src/window.vala', game_res, build_conf, build_conf_h,
   dependencies: [gtk3, hdy, pango_cairo],
   install: true)
 
