@@ -1,10 +1,24 @@
 <schemalist>
   <schema path="/com/expidus/twentyfortyeight/" id="com.expidus.twentyfortyeight">
     <key name="board-size" type="(ii)">
-      <default>(5, 5)</default>
+      <default>(4, 4)</default>
       <summary>Board Size</summary>
       <description>
         Changes the size of the board.
+      </description>
+    </key>
+    <key name="system-colors" type="b">
+      <default>true</default>
+      <summary>Use system colors</summary>
+      <description>
+        Use the system theme colors for tiles.
+      </description>
+    </key>
+    <key name="color-scheme" type="s">
+      <default>"Classic"</default>
+      <summary>Color Scheme</summary>
+      <description>
+        The color scheme name to use
       </description>
     </key>
   </schema>
