@@ -107,6 +107,8 @@ namespace Expidus2048 {
       cr.set_source_rgba(board_bg.red, board_bg.green, board_bg.blue, board_bg.alpha);
       this.draw_rounded_rectangle(cr, center_x, center_y, total_width, total_height, 6);
       
+      var text_color = color_scheme.get_foreground_color(0);
+      
       for (var y = 0; y < this._board_height; y++) {
         for (var x = 0; x < this._board_width; x++) {
           var draw_x = (x * (TILE_SPACING + TILE_SIZE)) + TILE_SPACING;
@@ -117,6 +119,23 @@ namespace Expidus2048 {
           cr.set_source_rgba(tile_bg.red, tile_bg.green, tile_bg.blue, tile_bg.alpha);
           
           this.draw_rounded_rectangle(cr, draw_x + center_x, draw_y + center_y, TILE_SIZE, TILE_SIZE, 6);
+          
+          if (value > 0) {
+            var layout = Pango.cairo_create_layout(cr);
+            layout.set_font_description(Pango.FontDescription.from_string("Sans Bold 35"));
+            var txt = value.to_string();
+            layout.set_text(txt, txt.length);
+
+            text_color = color_scheme.get_foreground_color(value);
+            cr.set_source_rgba(text_color.red, text_color.green, text_color.blue, text_color.alpha);
+            Pango.cairo_update_layout(cr, layout);
+            
+            int text_width = 0;
+            int text_height = 0;
+            layout.get_pixel_size(out text_width, out text_height);
+            cr.move_to(draw_x + center_x + ((TILE_SIZE / 2) - (text_width / 2)), draw_y + center_y + ((TILE_SIZE / 2) - (text_height / 2)));
+            Pango.cairo_show_layout(cr, layout);
+          }
         }
       }
       return false;

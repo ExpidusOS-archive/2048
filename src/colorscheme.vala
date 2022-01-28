@@ -40,7 +40,7 @@ namespace Expidus2048 {
     }
 
     public Color? get_foreground_color(uint64 value) {
-      return Color.from_hex("#ffffff");
+      return Color.from_hex("#776e65");
     }
     
     public Color get_background_color(bool board) {

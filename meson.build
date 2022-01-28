@@ -8,6 +8,7 @@ datadir = prefix / get_option('datadir')
 
 gtk3 = dependency('gtk+-3.0')
 hdy = dependency('libhandy-1')
+pango_cairo = dependency('pangocairo')
 
 version = '"@0@"'.format(meson.project_version())
 git = find_program('git', native: true, required: false)
@@ -41,7 +42,7 @@ game_res = gnome.compile_resources('expidus-2048-res', 'data/res/res.gresource.x
   c_name: 'Expidus2048')
 
 executable('expidus-2048', 'src/application.vala', 'src/colorscheme.vala', 'src/main.vala', 'src/window.vala', game_res, build_conf, build_conf_h,
-  dependencies: [gtk3, hdy],
+  dependencies: [gtk3, hdy, pango_cairo],
   install: true)
 
 install_data('data/com.expidus.twentyfortyeight.gschema.xml', install_dir: datadir / 'glib-2.0/schemas')
